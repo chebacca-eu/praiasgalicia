@@ -1,9 +1,13 @@
+// Global variable for the app
+var pg = {};
+
+
 // ---------------------------
 //  User-configurable options
 // ---------------------------
 
 
-var pg = {
+pg.config = {
     // Application language
     //   [Galician (default): 'gl' | Spanish: 'es' | English: 'en']
     lang: 'gl',

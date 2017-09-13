@@ -6,15 +6,16 @@
 // Available languages
 pg.langs = ['gl', 'es', 'en'];
 
-// Application language
-setLang(pg.lang);
 
+pg.setLang = function (newLang) {
+    pg.config.lang = pg.langs.includes(newLang) ? newLang : pg.langs[0];
 
-function setLang(newLang) {
-    pg.lang = pg.langs.includes(newLang) ? newLang : pg.langs[0];
-
-    document.getElementsByTagName('html')[0].setAttribute('lang', pg.lang);
+    document.getElementsByTagName('html')[0].setAttribute('lang', pg.config.lang);
 }
+
+
+// Application language
+pg.setLang(pg.config.lang);
 
 
 // -------------
@@ -29,7 +30,7 @@ createMapRequest();
 function createMapRequest() {
     var mapRequest = document.createElement('script');
 
-    mapRequest.setAttribute('src', 'https://maps.googleapis.com/maps/api/js?libraries=geometry&callback=initMap&key=' + pg.apiKeys.google);
+    mapRequest.setAttribute('src', 'https://maps.googleapis.com/maps/api/js?libraries=geometry&callback=initMap&key=' + pg.config.apiKeys.google);
     mapRequest.setAttribute('async', '');
     mapRequest.setAttribute('defer', '');
 
