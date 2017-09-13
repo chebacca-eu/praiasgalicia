@@ -203,6 +203,7 @@ function requestData(operation, params, callback) {
 
 function drawMarkers() {
     pg.data.places = this.response;
+    pg.map.data.addGeoJson(pg.data.places);
     pg.data.markers = pg.data.places.features.map(function (place) {
         return new google.maps.Marker({
             position: {
@@ -211,6 +212,9 @@ function drawMarkers() {
             },
             title: place.properties.name
         });
+    });
+    new MarkerClusterer(pg.map, pg.data.markers, {
+        imagePath: pg.config.urls.baseDir + '/img/google/m'
     });
 
     pg.infoWindow = new google.maps.InfoWindow();
