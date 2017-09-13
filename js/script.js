@@ -86,10 +86,21 @@ function initMap() {
             {lat: 42.45, lng: -9.25},    // O Grove
             {lat: 42.65, lng: -9.28}     // Muros
         ],
-        visible: false
+//         visible: false
+        // DEBUG
+        strokeColor: 'red',
+        strokeWeight: 1
     });
 
     resetMap();
+
+    // DEBUG
+    new google.maps.Rectangle({
+        bounds: pg.mapConfig.bounds,
+        map: pg.map,
+        strokeColor: 'yellow',
+        strokeWeight: 1
+    });
 }
 
 
