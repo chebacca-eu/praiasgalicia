@@ -94,6 +94,8 @@ function initMap() {
 
     resetMap();
 
+    findBeaches();
+
     // DEBUG
     new google.maps.Rectangle({
         bounds: pg.mapConfig.bounds,
@@ -133,4 +135,107 @@ function setCenterMarker(center) {
         pg.centerMarker.setAnimation(google.maps.Animation.DROP);
         pg.centerMarker.setVisible(true);
     }
+}
+
+
+// --------------
+//  MeteoGalicia
+// --------------
+
+
+pg.data = {
+    'places': [],
+    'markers': [],
+    'info': []
+};
+
+
+function findBeaches() {
+    var params = {
+        'location': 'praia',
+        'types': 'beach',
+        'lang': pg.config.lang
+    };
+    requestData('findPlaces', params, drawMarkers);
+}
+
+
+// TODO: Request data from MeteoGalicia via XMLHTTPRequest
+//       Doesn't work yet, CORS needs to be activated in their server
+//
+// function requestData(operation, params) {
+    // var paramStr = '&location=praia&types=beach';
+
+    // var request = new XMLHttpRequest();
+    // request.addEventListener('load', drawMarkers);
+    // request.addEventListener('error', function () {
+    //     console.log("ERROR!");
+    // });
+
+    // request.open('GET', 'http://servizos.meteogalicia.es/apiv3/' + operation + '?API_KEY=' + pg.config.apiKeys.mg + paramStr);
+    // request.setRequestHeader('Accept', 'application/json');
+    // request.responseType = 'json';
+    // request.send();
+// }
+
+
+// TODO: Get data from MeteoGalicia through a Python proxy
+//       When (If) CORS is activated in their server, do it directly via XMLHTTPRequest instead
+//
+function requestData(operation, params, callback) {
+    var paramStr = '';
+    for (var key in params) {
+        paramStr += '&' + key + '=' + params[key];
+    }
+
+    var request = new XMLHttpRequest();
+    request.addEventListener('load', callback);
+    request.addEventListener('error', function () {
+        console.log("ERROR!");
+    });
+
+    request.open('GET', pg.config.urls.mgProxy + '?operation=' + operation + '&API_KEY=' + pg.config.apiKeys.mg + paramStr);
+    request.setRequestHeader('Accept', 'application/json');
+    request.responseType = 'json';
+    request.send();
+}
+
+
+function drawMarkers() {
+    pg.data.places = this.response;
+    pg.data.markers = pg.data.places.features.map(function (place) {
+        return new google.maps.Marker({
+            position: {
+                lat: place.geometry.coordinates[1],
+                lng: place.geometry.coordinates[0]
+            },
+            title: place.properties.name
+        });
+    });
+
+    pg.infoWindow = new google.maps.InfoWindow();
+    var place, params;
+
+    pg.data.markers.forEach(function (marker, i) {
+        place = pg.data.places.features[i];
+        marker.addListener('visible_changed', function () {
+            console.log("i: " + i);
+        });
+        marker.addListener('click', function () {
+            var content = getInfoContent(place, i);
+            infoWindow.setContent(content);
+            infoWindow.open(pg.map, marker);
+        });
+    });
+}
+
+
+function getInfoContent(place, i) {
+    var info;
+    var info0;
+
+    var content = '<h1>' + place.properties.name + '</h1>' +
+                  '<p>' + place.properties.municipality + ' (' + place.properties.province + ')</p>' +
+                  '<p>' + pg.data.info[i].value +
+                  '<img src="' + pg.data.info[i].iconURL + '"></p>';
 }

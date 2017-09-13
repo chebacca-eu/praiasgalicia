@@ -14,6 +14,15 @@ pg.config = {
 
     apiKeys: {
         // Google API key
-        google: 'GOOGLE_API_KEY'
+        google: 'GOOGLE_API_KEY',
+        // MeteoGalicia API key
+        mg: 'METEOGALICIA_API_KEY'
+    },
+
+    urls: {
+        // Absolute URL of the application's base directory
+        baseDir: 'BASE_DIR_URL',
+        // Absolute URL of the Python proxy needed for MeteoGalicia API requests (mgapi_proxy.py)
+        mgProxy: 'METEOGALICIA_PROXY_URL'
     }
 };
