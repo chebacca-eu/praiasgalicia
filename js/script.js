@@ -49,7 +49,8 @@ function initMap() {
             north: 43.90,
             south: 41.70,
             west: -9.50
-        }
+        },
+        geoLocation: true
     };
 
     pg.map = new google.maps.Map(document.getElementById('map'), {
@@ -97,12 +98,13 @@ function resetMap() {
 
     setCenterMarker(pg.mapConfig.center);
 
-    if (navigator.geolocation) {
+    if ((pg.mapConfig.geoLocation === true) && navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
             pg.mapConfig.center = {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
             };
+            pg.mapConfig.geoLocation = true;
 
             setCenterMarker(pg.mapConfig.center);
         });
